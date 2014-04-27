@@ -1,0 +1,20 @@
+{
+    "name": "jonm/pario",
+    "description": "",
+    "authors": [
+        {
+            "name": "Jonas Mersholm",
+            "email": "jonas@mersholm.dk"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "minimum-stability": "stable"
+}
