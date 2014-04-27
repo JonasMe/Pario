@@ -7,6 +7,7 @@
 		protected $slug;
 		protected $databasType;
 		protected $renderOptions = array();
+		protected $recommendedField;
 
 		public function __construct( $name = null ) {
 			if( isset( $this->name ) && $this->name != "" && is_string($this->name) ) {
@@ -19,6 +20,10 @@
 		public function setName($name) {
 			$this->name = $name;
 			$this->slug = strtolower( preg_replace("/[^A-Za-z0-9]/", "", $this->name) );
+		}
+
+		public function getField() {
+			return $this->recommendedField;
 		}
 
 		public function getDbType() {

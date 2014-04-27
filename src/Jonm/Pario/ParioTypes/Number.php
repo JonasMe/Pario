@@ -15,6 +15,12 @@
 		protected $databasType = "double";
 
 		/**
+		 * Recommended html field type
+		 * @var string
+		 */
+		protected $recommendedField = "text";
+
+		/**
 		 * Verifies that the output is a number, before outputting it.
 		 * @param  double $number Input number from database
 		 * @return double         outputting number

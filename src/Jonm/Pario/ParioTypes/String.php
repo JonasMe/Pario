@@ -15,6 +15,12 @@
 		protected $databasType = "string";
 
 		/**
+		 * Recommended html field type
+		 * @var string
+		 */
+		protected $recommendedField = "text";
+
+		/**
 		 * Verifies that the output is a string, before outputting it.
 		 * @param  string $string Input string from database
 		 * @return string         outputting string
