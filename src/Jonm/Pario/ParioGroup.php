@@ -60,7 +60,7 @@
 			$this->slug = $this->namify( $this->name );
 			$this->definitionFile = storage_path() . "/pario/" . "ParioGroupDescription_" . $this->slug . ".json";
 			$this->hasFile = ( file_exists( $this->definitionFile ) ? true : false );
-			$this->getDefinition();
+			$this->setDefinition();
 			$this->factory = new ParioResultFactory($this->types);
 		}
 
@@ -223,7 +223,7 @@
 			}
 			
 			file_put_contents($this->definitionFile, serialize( $definition ));
-			$this->getDefinition();
+			$this->setDefinition();
 
 		}
 
@@ -240,7 +240,7 @@
 		 * Retrives the definition from file
 		 * @return none
 		 */
-		private function getDefinition() {
+		private function setDefinition() {
 			if( $this->hasFile ) {
 				$definition = unserialize( file_get_contents($this->definitionFile) );
 				$this->definition = $definition;
@@ -251,5 +251,21 @@
 
 			}
 
+		}
+
+		/**
+		 * Gets the full table definition
+		 * @return object 
+		 */
+		public function getDefinition() {
+			return $this->definition;
+		}
+
+		/**
+		 * Gets the full types array
+		 * @return array 
+		 */
+		public function getTypes() {
+			return $this->definition->types;
 		}
 	}
