@@ -85,7 +85,7 @@ And how is that usable, well, how about this, using the extended ParioType from 
 		print $type->formField();
 	}
 ```
-Will not output a formfield for the type.
+Will now output a form field for the type.
 
 This means that you can make 100% dynamic database transactions, without having to know the actual table definition ( I am sensing a pretty nifty GUI coming someday).
 
