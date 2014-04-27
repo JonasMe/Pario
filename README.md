@@ -37,6 +37,9 @@ A ParioType must at least consist of two methods and a member variable. A ParioT
 		//The databaseType is the field type of the column. We are using the Laravel Schema types here.
 		protected $databasType = "string";
 
+		//The recommended html input type for this field
+		protected $recommendedField = "text";
+
 		//The renderOutput method renders the data retrieved from the database, before returning it.
 		public function renderOutput($string) {
 			return ( is_string($string) ? $string : "");
@@ -52,6 +55,41 @@ A ParioType must at least consist of two methods and a member variable. A ParioT
 ```
 
 A ParioType may contain as many helper functions you would like, giving you the possibility to make things like DateTime now, add time, remove etc. all through bindings.
+You may also create your own extended versions of the ParioType, for example if you would like to make specific form field outputs for each ParioType.
+
+```php
+	namespace yourname\yourpackage;
+
+	class String extends \Jonm\Pario\String {
+		public function formField() {
+			return '<input type="text" name="' . $this->getSlug() . '" />';
+	}
+}
+
+```
+Now, simply add your namespace to the ParioType namespace array
+```php
+	Pario::addTypeSpace("yourname\\yourpackage");
+```
+Now, if you use the
+```php
+Pario::type("string");
+```
+It will fetch yours first.
+And how is that usable, well, how about this, using the extended ParioType from before?
+
+```php
+	$group = Pario::make("TestGroup");
+
+	foreach( $group->getTypes() as $type ) {
+		print $type->formField();
+	}
+```
+Will not output a formfield for the type.
+
+This means that you can make 100% dynamic database transactions, without having to know the actual table definition ( I am sensing a pretty nifty GUI coming someday).
+
+
 
 **Fetching a ParioGroup**
 ```php
