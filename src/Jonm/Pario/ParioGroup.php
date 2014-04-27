@@ -26,15 +26,34 @@
 		 */
 		private $types;
 
+		/**
+		 * Path to the definition cache file
+		 * @var string
+		 */
 		protected $definitionFile;
 
+		/**
+		 * Boolean to check file existance
+		 * @var boolean
+		 */
 		protected $hasFile;
 
+		/**
+		 * Holder for the ParioResultFactory
+		 * @var ParioResultFactory
+		 */
 		protected $factory;
 
+		/**
+		 * Defining simple constants
+		 */
 		const REMOVE 	= true;
 		const KEEP 		= false;
 
+		/**
+		 * Constructor method to initialize member variables
+		 * @param string $parioName Name of the group
+		 */
 		public function __construct( $parioName ) {
 			$this->types = array();
 			$this->name = $parioName;
@@ -45,17 +64,30 @@
 			$this->factory = new ParioResultFactory($this->types);
 		}
 
+
+		/**
+		 * Public method to save the schema and definition
+		 * @return ParioGroup Returns the groups current state
+		 */
 		public function save() {
 			$this->saveSchema();
 			$this->saveDefinition();
 			return $this;
 		}
 
+		/**
+		 * Public method to delete the current groups definition and schema
+		 * @return none
+		 */
 		public function delete() {
 			\Schema::dropIfExists('pario_' . $this->slug);
 			if( $this->hasFile ) { unlink($this->definitionFile); }
 		}
 
+		/**
+		 * Adds a key => value array to the groups schema
+		 * @param array $array Array containing values to add to the database
+		 */
 		public function add($array) {
 			$insArr = array();
 			foreach( $array as $k => $v) {
@@ -66,6 +98,11 @@
 			return $id;
 		}
 
+		/**
+		 * Finds a result by id
+		 * @param  integer $id
+		 * @return ParioResult
+		 */
 		public function find($id) {
 			if( isset( $this->definition ) && isset( $this->slug) ) {
 				$data = \DB::table('pario_' . $this->slug)->where($this->slug . "_id", '=', $id)->first();
@@ -78,6 +115,10 @@
 			}
 		}
 
+		/**
+		 * Retrieves all rows
+		 * @return array Array of ParioResult instances
+		 */
 		public function all() {
 			$data = \DB::table('pario_' . $this->slug)->get();
 			if( $data ) {
@@ -100,6 +141,11 @@
 			}
 		}
 
+		/**
+		 * Removes a type from the definition and scheme
+		 * @param  typename $type
+		 * @return none
+		 */
 		public function removeType($type) {
 			$type = $this->namify( $type );
 			if( isset( $this->definition->types[$type] ) ) {
@@ -110,12 +156,26 @@
 
 		}
 
-		public function addType( ParioType $type ) {
+		/**
+		 * Adds a type to the definition. Waiting for save to persist to database
+		 * @param ParioType $type
+		 * @param ParioGroup    $name Returns own state.
+		 */
+		public function addType( ParioType $type, $name = null ) {
 			$type->do = self::KEEP;
+			
+			if( !is_null($name) && is_string($name) ) {
+				$type->setName( $name );
+			}
+
 			$this->types[ $type->getSlug() ] = $type;
 			return $this;
 		}
 
+		/**
+		 * Saves the schema updated with new types or removing types
+		 * @return none
+		 */
 		protected function saveSchema() {
 			$tableName = 'pario_' . $this->slug;
 
@@ -150,7 +210,10 @@
 		}
 
 
-
+		/**
+		 * Saving the definition file
+		 * @return none
+		 */
 		protected function saveDefinition() {
 			
 			$definition = (object) [];
@@ -164,10 +227,19 @@
 
 		}
 
+		/**
+		 * Helperfunction to make name slugs
+		 * @param  string $string 
+		 * @return none         
+		 */
 		protected function namify($string) {
 			return strtolower( preg_replace("/[^A-Za-z0-9]/", "", $string) );
 		}
 
+		/**
+		 * Retrives the definition from file
+		 * @return none
+		 */
 		private function getDefinition() {
 			if( $this->hasFile ) {
 				$definition = unserialize( file_get_contents($this->definitionFile) );
